@@ -75,6 +75,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #    define LAYER_STATE_8BIT
 #endif
 
+// Dynamic keymap settings for VIA
+#define DYNAMIC_KEYMAP_LAYER_COUNT 6
+
 // To squeeze firmware size
 #undef LOCKING_SUPPORT_ENABLE
 #undef LOCKING_RESYNC_ENABLE
