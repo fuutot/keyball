@@ -39,7 +39,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // keymap for Mouse layer (Miryoku MOUSE style)
   [2] = LAYOUT_universal(
     XXXXXXX  , XXXXXXX  , XXXXXXX  , XXXXXXX  , XXXXXXX  ,                            G(KC_A)  , G(KC_V)  , G(KC_C)  , G(KC_X)  , G(KC_Z)  ,
-    KC_LALT  , KC_LCTL  , KC_LGUI  , KC_LSFT  , XXXXXXX  ,                            XXXXXXX  , KC_LSFT  , KC_LCTL  , KC_LALT  , KC_LGUI  ,
+    KC_LALT  , KC_LCTL  , KC_LGUI  , KC_LSFT  , XXXXXXX  ,                            XXXXXXX  , KC_LSFT  , KC_LGUI  , KC_LCTL  , KC_LALT  ,
     XXXXXXX  , XXXXXXX  , XXXXXXX  , XXXXXXX  , XXXXXXX  ,                            XXXXXXX  , KC_BTN1  , KC_BTN2  , XXXXXXX  , XXXXXXX  ,
     XXXXXXX  , XXXXXXX  , XXXXXXX  , XXXXXXX  , XXXXXXX  , XXXXXXX  ,      XXXXXXX  , XXXXXXX  , XXXXXXX  , XXXXXXX  , XXXXXXX  , XXXXXXX
   ),
