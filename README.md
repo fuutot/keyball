@@ -27,6 +27,23 @@ Keyball 固有の設定は [ライブラリの説明](qmk_firmware/keyboards/key
 手動実行は **Actions → Build Keyball39 → Run workflow** で対象ブランチを選択します。
 ワークフローを初めて追加するブランチでは、PR の自動ビルドを利用できます。手動実行ボタンはワークフローがデフォルトブランチに入ってから使えます。
 
+### キーマップのカンニングシート
+
+ビルド時に `keymap.c` と `info.json` から全レイヤーの配列図を自動生成します。
+同じ実行の **Artifacts → keyball39-myKeymap-cheatsheet** をダウンロードし、展開した `index.html` をブラウザーで開いてください。
+タップと長押しの機能を表示し、ブラウザーから印刷もできます。画像として使える `keyball39-myKeymap.svg` も含みます。
+
+配列図は `LAYOUT_universal` の全42位置を表示するため、トラックボール搭載側の物理キーがない位置も含みます。
+VIA / Remap で EEPROM に保存した配列は反映されません。
+
+ローカルでは Python 3 のみで生成できます（追加パッケージ不要）。
+
+```sh
+python3 scripts/generate_keymap_cheatsheet.py
+```
+
+生成先は `tmp/keymap-cheatsheet/` です。生成スクリプトを変更した場合も Actions が実行されます。
+
 VIA / Remap のキーマップが EEPROM に保存されている場合、ファームウェアを書き換えても保存済みの配列が優先されます。
 `keymap.c` の変更を反映したい場合は、必要な設定をバックアップしてから EEPROM をリセットしてください。
 VIA の定義ファイルは [via.json](qmk_firmware/keyboards/keyball/keyball39/via.json) です。
