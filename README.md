@@ -1,43 +1,56 @@
-# Keyball Series
+# Keyball39 personal firmware
 
-![Keyball61](./keyball61/doc/rev1/images/kb61_001.jpg)
+自分専用の Keyball39 キーマップ `myKeymap` を設定し、GitHub Actions でビルドするためのリポジトリです。
+QMK 本体はビルド時に **0.22.14** を取得します。
 
-Keyball series is keyboard family which have 100% track ball.
+## 設定を変更する
 
-Keyboards in the family are:
+通常は次の3ファイルを編集します。
 
-* Available
-    * Keyball39: split + 39 keys + a track ball
-    * Keyball44: split + 44 keys + a track ball
-    * Keyball61: split + 61 keys + a track ball
-* Unavailable
-    * Keyball46 (first one!)
-    * One47
+| ファイル | 設定内容 |
+| --- | --- |
+| [keymap.c](qmk_firmware/keyboards/keyball/keyball39/keymaps/myKeymap/keymap.c) | キー配列、6レイヤー、スクロールモードの切り替え |
+| [config.h](qmk_firmware/keyboards/keyball/keyball39/keymaps/myKeymap/config.h) | タップ時の遅延、オートマウスなど |
+| [rules.mk](qmk_firmware/keyboards/keyball/keyball39/keymaps/myKeymap/rules.mk) | OLED・VIA・RGBなどの有効／無効 |
 
-## Where to Buy
+現在は OLED・VIA が有効、RGB が無効です。既存の配列・動作をそのまま使用します。
+Keyball 固有の設定は [ライブラリの説明](qmk_firmware/keyboards/keyball/lib/keyball/README.md) と
+[独自キーコード一覧](qmk_firmware/keyboards/keyball/lib/keyball/keycodes.md) を参照してください。
 
-|Keyboard   |Shirogane Lab / 白銀ラボ                                   |Yushakobo / 遊舎工房                       |
-|-----------|-------------------------------------------|-----------------------------------------------------------|
-|Keyball39  |<https://shiroganelab.com/products/keyball39> |<https://shop.yushakobo.jp/products/5357>  |
-|Keyball44  |<https://shiroganelab.com/products/keyball44> |<https://shop.yushakobo.jp/products/8337>  |
-|Keyball61  |<https://shiroganelab.com/products/keyball61> |<https://shop.yushakobo.jp/products/5358>  |
+## GitHub Actions でビルドする
 
-## Build Guide
+1. 設定の変更をコミットして push するか、プルリクエストを作成します。ファームウェアまたはビルド用ワークフローに変更があれば、自動でビルドします。
+2. リポジトリの **Actions → Build Keyball39** から該当する実行を開きます。
+3. 成功した実行の **Artifacts → keyball39-myKeymap-firmware** をダウンロードして展開します。
+4. `keyball_keyball39_myKeymap.hex` を QMK Toolbox などで左右両方の Pro Micro（ATmega32U4 / Caterina）に書き込みます。各側を USB 接続し、リセットしてブートローダーに入れてから書き込みます。
 
-*   Keyball39:
-    [English/英語](/keyball39/doc/rev1/buildguide_en.md),
-    [日本語/Japanese](./keyball39/doc/rev1/buildguide_jp.md)
-*   Keyball44:
-    [English/英語](./keyball44/doc/rev1/buildguide_en.md),
-    [日本語/Japanese](./keyball44/doc/rev1/buildguide_jp.md)
-*   Keyball61:
-    [English/英語](./keyball61/doc/rev1/buildguide_en.md),
-    [日本語/Japanese](./keyball61/doc/rev1/buildguide_jp.md)
+手動実行は **Actions → Build Keyball39 → Run workflow** で対象ブランチを選択します。
+ワークフローを初めて追加するブランチでは、PR の自動ビルドを利用できます。手動実行ボタンはワークフローがデフォルトブランチに入ってから使えます。
 
-## Firmware
+VIA / Remap のキーマップが EEPROM に保存されている場合、ファームウェアを書き換えても保存済みの配列が優先されます。
+`keymap.c` の変更を反映したい場合は、必要な設定をバックアップしてから EEPROM をリセットしてください。
+VIA の定義ファイルは [via.json](qmk_firmware/keyboards/keyball/keyball39/via.json) です。
 
-See [document for firmware source code](./qmk_firmware/keyboards/keyball/readme.md).
+## ローカルでビルドする場合
 
-### Pre-compiled Firmwares
+QMK CLI と AVR 向けのビルド環境を用意したうえで、このリポジトリのルートで実行します。
 
-(TO BE DOCUMENTED)
+```sh
+git clone --depth 1 --branch 0.22.14 --recurse-submodules --shallow-submodules \
+  https://github.com/qmk/qmk_firmware.git __qmk__
+python3 -m pip install -r __qmk__/requirements.txt
+qmk setup --home "$PWD/__qmk__" --yes
+ln -s "$PWD/qmk_firmware/keyboards/keyball" __qmk__/keyboards/keyball
+qmk compile -j 4 -kb keyball/keyball39 -km myKeymap
+```
+
+生成先は `__qmk__/keyball_keyball39_myKeymap.hex` です。
+
+## 含まれるもの
+
+Keyball39 のキーボード定義、`myKeymap`、トラックボール用 PMW3360 ドライバー、Keyball / OLED ライブラリとフォント、VIA 定義を含みます。
+他機種、サンプルキーマップ、基板設計データ、組立資料、全機種向けビルド・リリース処理は含みません。
+削除した資料は Git の履歴と [上流リポジトリ](https://github.com/Yowkees/keyball) で確認できます。
+
+元の Keyball ファームウェアは Yowkees / 白銀ラボおよび各コントリビューターによるものです。
+著作権表記と [LICENSE](LICENSE) を保持しています。

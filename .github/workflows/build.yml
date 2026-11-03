@@ -1,0 +1,56 @@
+name: Build Keyball39
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - 'qmk_firmware/**'
+      - '.github/workflows/build.yml'
+  pull_request:
+    paths:
+      - 'qmk_firmware/**'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/qmk/qmk_cli@sha256:2dc05fc9f32efebd6b05c2b8676ee548358bc7e151e9dbf4dac6b6eed4513b07
+    steps:
+      - name: Checkout keymap and keyboard sources
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Checkout QMK 0.22.14
+        uses: actions/checkout@v6
+        with:
+          repository: qmk/qmk_firmware
+          ref: '0.22.14'
+          path: __qmk__
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Set up QMK
+        run: |
+          /usr/bin/python3 -m pip install -r __qmk__/requirements.txt
+          qmk setup --home "$GITHUB_WORKSPACE/__qmk__" --yes
+          ln -s "$GITHUB_WORKSPACE/qmk_firmware/keyboards/keyball" __qmk__/keyboards/keyball
+
+      - name: Build myKeymap
+        run: qmk compile -j 4 -kb keyball/keyball39 -km myKeymap
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v5
+        with:
+          name: keyball39-myKeymap-firmware
+          path: __qmk__/keyball_keyball39_myKeymap.hex
+          if-no-files-found: error
