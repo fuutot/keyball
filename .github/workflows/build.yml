@@ -6,10 +6,12 @@ on:
     paths:
       - 'qmk_firmware/**'
       - '.github/workflows/build.yml'
+      - 'scripts/**'
   pull_request:
     paths:
       - 'qmk_firmware/**'
       - '.github/workflows/build.yml'
+      - 'scripts/**'
   workflow_dispatch:
 
 permissions:
@@ -47,6 +49,18 @@ jobs:
 
       - name: Build myKeymap
         run: qmk compile -j 4 -kb keyball/keyball39 -km myKeymap
+
+      - name: Generate keymap cheat sheet
+        run: |
+          /usr/bin/python3 -B -m unittest discover -s scripts
+          /usr/bin/python3 scripts/generate_keymap_cheatsheet.py
+
+      - name: Upload keymap cheat sheet
+        uses: actions/upload-artifact@v5
+        with:
+          name: keyball39-myKeymap-cheatsheet
+          path: tmp/keymap-cheatsheet/
+          if-no-files-found: error
 
       - name: Upload firmware
         uses: actions/upload-artifact@v5
